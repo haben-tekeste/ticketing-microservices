@@ -1,0 +1,17 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+deploy:
+  kubectl: {}
+build:
+  artifacts:
+    - image: meksonbravo/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "src/**/*.ts"
+manifests:
+  rawYaml:
+    - "./infra/k8s/*"
