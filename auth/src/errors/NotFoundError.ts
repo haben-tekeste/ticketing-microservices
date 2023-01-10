@@ -1,6 +1,6 @@
-import { CustomError } from "./CustomError";
+import  CustomError  from "./CustomError";
 
-export class NotFoundError extends CustomError{
+export default class NotFoundError extends CustomError{
     public statusCode = 404;
 
     constructor(){
@@ -13,3 +13,5 @@ export class NotFoundError extends CustomError{
         return [{message:"Sorry, page not found"}]
     }
 }
+
+export {NotFoundError}

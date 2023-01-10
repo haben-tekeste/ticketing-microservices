@@ -1,6 +1,6 @@
-import { CustomError } from "./CustomError";
+import  CustomError  from "./CustomError";
 
-export class DatabaseOperationError extends CustomError {
+export default class DatabaseOperationError extends CustomError {
   public statusCode = 500;
   constructor() {
     super();
@@ -12,3 +12,5 @@ export class DatabaseOperationError extends CustomError {
     return [{ message: "Database Operation failed" }];
   }
 }
+
+export {DatabaseOperationError}

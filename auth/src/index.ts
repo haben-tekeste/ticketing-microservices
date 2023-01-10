@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import {
   signinRouter,
   signupRouter,
@@ -25,6 +26,15 @@ app.use("*", (req, res) => {
 // handling errors
 app.use(errorHandler);
 
-app.listen(4000, () => {
-  console.log("Auth Service running at port 4000");
-});
+const start = async () => {
+  try {
+    await mongoose.connect("mongodb://mongodb-auth-srv:27017/auth");
+  } catch (error) {
+    console.error(error);
+  }
+  app.listen(4000, () => {
+    console.log("Auth Service running at port 4000!");
+  });
+};
+
+start();
