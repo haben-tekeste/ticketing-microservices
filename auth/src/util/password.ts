@@ -4,7 +4,7 @@ import { promisify } from "util";
 const scryptAsync = promisify(scrypt);
 
 export class PasswordManager {
-  public static async hashPassword (password: string) {
+  public static async hashPassword(password: string) {
     const salt = randomBytes(8).toString("hex");
     const buffer = (await scryptAsync(password, salt, 64)) as Buffer;
     return `${buffer.toString("hex")}.${salt}`;
@@ -15,7 +15,7 @@ export class PasswordManager {
   ) {
     // buffer == hashedPassword
     const [buffer, salt] = suppliedPassword.split(".");
-    const passwordToCompare = await scryptAsync(plainPassword, salt, 64);
-    return buffer == passwordToCompare;
+    const passwordToCompare = (await scryptAsync(plainPassword, salt, 64)) as Buffer;
+    return buffer == passwordToCompare.toString('hex');
   }
 }

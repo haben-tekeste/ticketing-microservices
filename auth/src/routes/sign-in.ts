@@ -1,24 +1,51 @@
 import express from "express";
-import { body, validationResult } from "express-validator";
-import { RequestValidationError, DatabaseOperationError } from "../errors";
-// import { RequestValidationError } from "../errors/RequestValidationError";
-// import { DatabaseOperationError } from "../errors/DatabaseOperationError";
+import { body } from "express-validator";
+import { BadRequestError } from "../errors";
+import jsonwebtoken from "jsonwebtoken";
+import { User } from "../models/User";
+import { PasswordManager } from "../util/password";
+import { validateRequest } from "../middleware/validate-request";
 
 const router = express.Router();
 
 router.post(
   "/api/users/signin",
   [
-    body("email").isEmail(),
-    body("password").trim().isLength({ min: 5, max: 20 }),
+    body("email")
+      .isEmail()
+      .notEmpty()
+      .withMessage("Please Provide a valid email"),
+    body("password").trim().notEmpty().withMessage("Please provide password"),
   ],
-  (req: express.Request, res: express.Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(errors.array());
+  validateRequest,
+  async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const { email, password } = req.body;
+      const existingUser = await User.findOne({ email });
+      if (!existingUser) throw new BadRequestError("Invalid Email");
+      const passwordMatched = await PasswordManager.comparePassword(
+        existingUser.password,
+        password
+      );
+      if (!passwordMatched) throw new BadRequestError("Invalid Credentials");
+
+      // Generate jwt token
+      const jwtToken = jsonwebtoken.sign(
+        {
+          id: existingUser._id,
+          email: existingUser.email,
+        },
+        process.env.JWT_KEY!
+      );
+      req.session = { jwt: jwtToken };
+      res.status(200).json(existingUser);
+    } catch (error) {
+      return next(error);
     }
-    throw new DatabaseOperationError();
-    // res.status(201).send("Successful sign in");
   }
 );
 
