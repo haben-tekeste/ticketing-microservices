@@ -39,9 +39,7 @@ router.post(
       );
       req.session = { jwt: jwtToken };
       res.status(201).json(newUser);
-    } catch (error) {
-      console.log("caught error ", error);
-
+    } catch (error) { 
       return next(error);
     }
   }

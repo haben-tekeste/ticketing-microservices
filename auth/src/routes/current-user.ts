@@ -1,9 +1,15 @@
-import express from 'express'
+import express from "express";
+import { isAuth } from "../middleware/isAuth";
+import { currentUserMiddleware } from "../middleware/current-user-mw";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/api/users/currentuser',(req,res) => {
-    res.status(201).send("Successful current user")
-})
+router.get(
+  "/api/users/currentuser",
+  currentUserMiddleware,
+  (req, res, next) => {
+    res.send({ currentUser: req.currentUser || null });
+  }
+);
 
-export {router as currentuserRouter}
+export { router as currentuserRouter };
