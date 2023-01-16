@@ -12,6 +12,14 @@ build:
         manual:
           - dest: .
             src: "src/**/*.ts"
+    - image: meksonbravo/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "**/*.js"
 manifests:
   rawYaml:
     - "./infra/k8s/*"
