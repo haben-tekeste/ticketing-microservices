@@ -8,7 +8,7 @@ export default () => {
   const router = useRouter();
   const { doRequest, errors } = useRequest({
     body: { email, password },
-    url: "https://ticketing.dev/api/users/signup",
+    url: "https://ticketing.dev/api/users/signin",
     method: "post",
     onSuccess: () => router.push("/"),
   });
@@ -18,7 +18,7 @@ export default () => {
   };
   return (
     <form onSubmit={onSubmit}>
-      <h3>Sign Up</h3>
+      <h3>Sign In</h3>
       <div className="form-group m-2">
         <label>E-mail</label>
         <input
@@ -40,7 +40,7 @@ export default () => {
       {errors}
       <div className="form-group m-2">
         <button className="btn btn-primary" type="submit">
-          Sign up
+          Sign In
         </button>
       </div>
     </form>
