@@ -7,8 +7,8 @@ import {
   signoutRouter,
   currentuserRouter,
 } from "./routes";
-import { errorHandler } from "./middleware/error-handler";
-import { NotFoundError } from "./errors/NotFoundError";
+import { errorHandler } from "@ht2ickets/common";
+import { NotFoundError } from "@ht2ickets/common";
 
 const app = express();
 
