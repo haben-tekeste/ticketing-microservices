@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tickets
+  template:
+    metadata:
+      labels:
+        app: tickets
+    spec:
+      containers:
+        - name: tickets
+          image: meksonbravo/tickets
+          env:
+            - name: MONGO_URI
+              value: 'mongodb://mongodb-tickets-srv:27017/tickets'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret-key
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tickets-srv
+spec:
+  selector:
+    app: tickets
+  ports:
+    - port: 4001
+      targetPort: 4001
+      protocol: TCP
+      name: tickets
