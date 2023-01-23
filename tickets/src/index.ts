@@ -9,8 +9,8 @@ const start = async () => {
   } catch (error) {
     console.error(error);
   }
-  app.listen(4000, () => {
-    console.log("Auth Service running at port 4000!");
+  app.listen(4001, () => {
+    console.log("Tickets Service running at port 4001!");
   });
 };
 

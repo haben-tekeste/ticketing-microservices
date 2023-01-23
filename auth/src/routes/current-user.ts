@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuth, currentUserMiddleware } from "@ht2ickets/common";
+import { currentUserMiddleware } from "@ht2ickets/common";
 
 const router = express.Router();
 
