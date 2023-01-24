@@ -26,9 +26,9 @@ router.post(
       const { title, price } = req.body;
       const ticket = new Ticket({ title, price, userId: req.currentUser!.id });
       await ticket.save();
-      res.status(200).send({});
+      res.status(200).send(ticket);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 );

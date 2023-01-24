@@ -1,7 +1,7 @@
 import express from "express";
 import cookieSession from "cookie-session";
 import { errorHandler, NotFoundError, currentUserMiddleware } from "@ht2ickets/common";
-import { createTicketRouter } from "./routes";
+import { createTicketRouter, showTicketRouter, getAllTicketsRouter, updateTicketRouter } from "./routes";
 
 const app = express();
 
@@ -19,6 +19,9 @@ app.use(currentUserMiddleware)
 
 // routes
 app.use(createTicketRouter)
+app.use(showTicketRouter)
+app.use(getAllTicketsRouter)
+app.use(updateTicketRouter)
 
 // 404 error
 app.use("*", (req, res) => {

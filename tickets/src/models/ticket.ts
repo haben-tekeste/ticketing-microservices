@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 // properties required to create ticket
 interface ITicket {
   title: string;
-  price: string;
+  price: number;
   userId: string
 }
 
@@ -21,7 +21,7 @@ interface IModel extends mongoose.Model<IDocument> {
 
 interface IDocument extends mongoose.Document {
   title: string;
-  price: string;
+  price: number;
   userId: string;
 }
 
@@ -32,7 +32,7 @@ const ticketSchema = new mongoose.Schema(
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
     },
     userId:{
