@@ -1,22 +1,23 @@
-import { connect, StringCodec } from "nats";
+import {
+  connect,
+} from "nats";
 
-(async () => {
-  // to create a connection to a nats-server:
-  const nc = await connect({ servers: "http://localhost:4222" });
+import { TicketCreatedListener } from "./events/ticket-created-listener";
 
-  // create a codec
-  const sc = StringCodec();
-
-  // create a simple subscriber and iterate over messages
-  // matching the subscription
-  const sub = nc.subscribe("hello");
-
+try {
   (async () => {
-    for await (const m of sub) {
-      console.log(`[${sub.getProcessed()}]: ${sc.decode(m.data)}`);
-    }
-    console.log("subscription closed");
-  })();
+    // to create a connection to a nats-server:
+    const nc = await connect({ servers: "http://localhost:4222" });
 
-  // await nc.drain();
-})();
+    new TicketCreatedListener(nc).listen()
+  })();
+} catch (error) {
+  console.log(error);
+}
+
+interface Event {
+  subject: string;
+  data: any;
+}
+
+
