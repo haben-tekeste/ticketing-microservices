@@ -1,5 +1,4 @@
-import { connect, NatsConnection, StringCodec } from "nats";
-import { TicketCreatedPublisher } from "./events/ticket-created-publisher";
+import { connect, StringCodec } from "nats";
 
 try {
   (async () => {

@@ -3,6 +3,8 @@ import { isAuth, validateRequest } from "@ht2ickets/common";
 import { body } from "express-validator";
 import { currentUserMiddleware } from "@ht2ickets/common";
 import { Ticket } from "../models/ticket";
+import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
+import { natswrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -26,6 +28,15 @@ router.post(
       const { title, price } = req.body;
       const ticket = new Ticket({ title, price, userId: req.currentUser!.id });
       await ticket.save();
+      // await new TicketCreatedPublisher(natswrapper.Client).publish(
+      //   {
+      //     id: ticket.id,
+      //     userId: ticket.userId,
+      //     price: ticket.price,
+      //     title: ticket.title,
+      //   },
+      //   "ticketing"
+      // );
       res.status(200).send(ticket);
     } catch (error) {
       return next(error);
