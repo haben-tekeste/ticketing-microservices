@@ -1,17 +1,17 @@
 import { Listener } from "./base-listener"
 import { Msg } from "nats"
-import { TicketCreatedEvent } from "./ticket-created-event"
+import { TicketCreated } from "./ticket-created-event"
 import { Subjects } from "./subjects"
 
-export class TicketCreatedListener extends Listener <TicketCreatedEvent>{
+export class TicketCreatedListener extends Listener <TicketCreated>{
     subject: Subjects.TicketCreated = Subjects.TicketCreated
     queueGroupName = 'payments-service'
-    filterSubject = ''
+    filterSubject = Subjects.EventTicketCreated
     durableName = 'ticket-durable'
-    streamName = 'test1'
-    deliverSubject = 'created'
+    streamName = 'mystream'
+    deliverSubject = Subjects.TicketCreated
   
-    onMessage(data:TicketCreatedEvent['data'], msg:Msg){
+    onMessage(data:TicketCreated['data'], msg:Msg){
       console.log('Event data!', data);
       msg.respond()
       

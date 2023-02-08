@@ -28,15 +28,15 @@ router.post(
       const { title, price } = req.body;
       const ticket = new Ticket({ title, price, userId: req.currentUser!.id });
       await ticket.save();
-      // await new TicketCreatedPublisher(natswrapper.Client).publish(
-      //   {
-      //     id: ticket.id,
-      //     userId: ticket.userId,
-      //     price: ticket.price,
-      //     title: ticket.title,
-      //   },
-      //   "ticketing"
-      // );
+
+      await new TicketCreatedPublisher(natswrapper.Client).publish(
+        {
+          id: ticket.id,
+          title: ticket.title,
+          price: ticket.price,
+          userId: ticket.userId,
+        }
+      );
       res.status(200).send(ticket);
     } catch (error) {
       return next(error);

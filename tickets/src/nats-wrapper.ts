@@ -14,7 +14,7 @@ class NatsWrapper {
     this._client = await connect({
       servers: server,
     });
-    console.log("Connected to NATS server !!!");
+    console.log("Connected to NATS server !!!!");
 
     return new Promise((resolve, reject) => {
       try {

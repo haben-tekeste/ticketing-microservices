@@ -3,6 +3,7 @@ import {
 } from "nats";
 
 import { TicketCreatedListener } from "./events/ticket-created-listener";
+import { TicketUpdatedListener } from "./events/ticket-updated-listener";
 
 try {
   (async () => {
@@ -10,6 +11,7 @@ try {
     const nc = await connect({ servers: "http://localhost:4222" });
 
     new TicketCreatedListener(nc).listen()
+    new TicketUpdatedListener(nc).listen()
   })();
 } catch (error) {
   console.log(error);

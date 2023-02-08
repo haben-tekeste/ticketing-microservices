@@ -7,6 +7,8 @@ import {
   NotAuthorizedError,
 } from "@ht2ickets/common";
 import { Ticket } from "../models/ticket";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+import { natswrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -35,12 +37,19 @@ router.put(
         throw new NotAuthorizedError();
       }
       ticket.set({
-        title:req.body.title,
-        price: req.body.price
-      })
+        title: req.body.title,
+        price: req.body.price,
+      });
       await ticket.save();
-      
-      res.send(ticket)
+
+      await new TicketUpdatedPublisher(natswrapper.Client).publish({
+        id: ticket.id,
+        title: ticket.title,
+        price: ticket.price,
+        userId: ticket.userId,
+      });
+
+      res.send(ticket);
     } catch (error) {
       return next(error);
     }
