@@ -26,7 +26,7 @@ router.post(
   ) => {
     try {
       const { title, price } = req.body;
-      const ticket = new Ticket({ title, price, userId: req.currentUser!.id });
+      const ticket = Ticket.build({ title, price, userId: req.currentUser!.id });
       await ticket.save();
 
       await new TicketCreatedPublisher(natswrapper.Client).publish(
