@@ -8,6 +8,7 @@ interface ITicket {
   id:string;
   title: string;
   price: number;
+  userId: string;
 }
 // an interface that describes the properties
 // a user document has
@@ -15,6 +16,7 @@ interface ITicket {
 export interface IDocument extends mongoose.Document {
   title: string;
   price: number;
+  userID: number;
   version: number;
   isReserved(): Promise<boolean>;
 }
@@ -39,6 +41,10 @@ const ticketSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    userID:{
+      type: mongoose.Types.ObjectId,
+      required:true
+    },
     version: {
       type: Number,
       // required:true,
@@ -55,7 +61,9 @@ const ticketSchema = new mongoose.Schema(
 );
 
 ticketSchema.statics.build = (ticket: ITicket) => {
-  return new Ticket(ticket);
+  return new Ticket({
+    ...ticket, _id:ticket.id
+  });
 };
 
 // go through all the orders and look for the
