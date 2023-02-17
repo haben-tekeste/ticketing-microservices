@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import { Order } from "./order";
 import { OrderStatus } from "@ht2ickets/common";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 // An interface that describes
 // properties required to create ticket
 interface ITicket {
-  id:string;
+  id: string;
   title: string;
   price: number;
   userId: string;
@@ -16,7 +17,7 @@ interface ITicket {
 export interface IDocument extends mongoose.Document {
   title: string;
   price: number;
-  userID: number;
+  userId: number;
   version: number;
   isReserved(): Promise<boolean>;
 }
@@ -27,12 +28,14 @@ export interface IDocument extends mongoose.Document {
 interface IModel extends mongoose.Model<IDocument> {
   isReserved(): Promise<boolean>;
   build(usr: ITicket): IDocument;
+  findTicketByEvent(event: {
+    id: string;
+    version: number;
+  }): Promise<IDocument | null>;
 }
-
 
 const ticketSchema = new mongoose.Schema(
   {
-    
     title: {
       type: String,
       required: true,
@@ -41,13 +44,9 @@ const ticketSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    userID:{
+    userId: {
       type: mongoose.Types.ObjectId,
-      required:true
-    },
-    version: {
-      type: Number,
-      // required:true,
+      required: true,
     },
   },
   {
@@ -60,9 +59,25 @@ const ticketSchema = new mongoose.Schema(
   }
 );
 
+ticketSchema.set("versionKey", "version");
+ticketSchema.plugin(updateIfCurrentPlugin);
+
 ticketSchema.statics.build = (ticket: ITicket) => {
   return new Ticket({
-    ...ticket, _id:ticket.id
+    _id: ticket.id,
+    title: ticket.title,
+    price: ticket.price,
+    userId: ticket.userId,
+  });
+};
+
+ticketSchema.statics.findTicketByEvent = (event: {
+  id: string;
+  version: number;
+}) => {
+  return Ticket.findOne({
+    _id: event.id,
+    version: event.version - 1,
   });
 };
 

@@ -51,7 +51,7 @@ router.post(
         ticket,
         userId: req.currentUser!.id,
       });
-      await order.save()
+      await order.save();
 
       // publish event
       new OrderCreatedPublisher(natswrapper.Client).publish({
@@ -59,11 +59,11 @@ router.post(
         status: order.status,
         userId: order.userId,
         expiresAt: order.expiresAt.toISOString(),
-        ticket:{
-          id:order.ticket.id,
-          price:order.ticket.price
-        }
-      })
+        ticket: {
+          id: order.ticket.id,
+          price: order.ticket.price,
+        },
+      });
 
       res.send({});
     } catch (error) {

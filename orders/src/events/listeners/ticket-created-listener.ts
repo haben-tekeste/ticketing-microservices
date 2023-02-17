@@ -4,7 +4,7 @@ import { Ticket } from "../../models/ticket";
 
 export class TicketCreatedListener extends Listener<TicketCreated> {
   deliverSubject = Subjects.TicketCreated;
-  durableName = "ticket-order-durable";
+  durableName = "ticket-created-order-durable";
   queueGroupName = "orders-service";
   filterSubject = Subjects.EventTicketCreated;
   streamName = "mystream";
