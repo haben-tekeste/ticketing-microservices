@@ -56,6 +56,7 @@ router.post(
       // publish event
       new OrderCreatedPublisher(natswrapper.Client).publish({
         id: order.id,
+        version: order.version,
         status: order.status,
         userId: order.userId,
         expiresAt: order.expiresAt.toISOString(),

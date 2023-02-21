@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { OrderStatus } from "@ht2ickets/common";
 import { IDocument as TicketDoc } from "./ticket";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 // An interface that describes
 // properties required to create order
@@ -26,6 +27,7 @@ interface IDocument extends mongoose.Document {
   status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
+  version: number;
 }
 
 const orderSchema = new mongoose.Schema(
@@ -57,9 +59,11 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
+orderSchema.set("versionKey", "vesion");
+orderSchema.plugin(updateIfCurrentPlugin);
+
 orderSchema.statics.build = (order: IOrder) => {
   return new Order(order);
 };
-
 
 export const Order = mongoose.model<IDocument, IModel>("Order", orderSchema);

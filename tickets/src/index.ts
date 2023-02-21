@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { app } from "./app";
 import { TicketCreatedPublisher } from "./events/publishers/ticket-created-publisher";
 import { natswrapper } from "./nats-wrapper";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 
 const start = async () => {
   if (!process.env.JWT_KEY) throw new Error("JWT Failed ");
@@ -23,6 +25,8 @@ const start = async () => {
         process.exit();
       })
     );
+    new OrderCreatedListener(natswrapper.Client).listen()
+    new OrderCancelledListener(natswrapper.Client).listen()
   } catch (error) {
     console.error(error);
   }

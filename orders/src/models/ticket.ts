@@ -9,7 +9,7 @@ interface ITicket {
   id: string;
   title: string;
   price: number;
-  userId: string;
+  // userId: string;
 }
 // an interface that describes the properties
 // a user document has
@@ -17,7 +17,7 @@ interface ITicket {
 export interface IDocument extends mongoose.Document {
   title: string;
   price: number;
-  userId: number;
+  // userId: number;
   version: number;
   isReserved(): Promise<boolean>;
 }
@@ -44,10 +44,10 @@ const ticketSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    userId: {
-      type: mongoose.Types.ObjectId,
-      required: true,
-    },
+    // userId: {
+    //   type: mongoose.Types.ObjectId,
+    //   required: true,
+    // },
   },
   {
     toJSON: {
@@ -67,7 +67,7 @@ ticketSchema.statics.build = (ticket: ITicket) => {
     _id: ticket.id,
     title: ticket.title,
     price: ticket.price,
-    userId: ticket.userId,
+    // userId: ticket.userId,
   });
 };
 
