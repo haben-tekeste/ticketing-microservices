@@ -26,7 +26,6 @@ export interface IDocument extends mongoose.Document {
 // the properties of a ticket model
 
 interface IModel extends mongoose.Model<IDocument> {
-  isReserved(): Promise<boolean>;
   build(usr: ITicket): IDocument;
   findTicketByEvent(event: {
     id: string;
