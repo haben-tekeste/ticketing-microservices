@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 import { app } from "./app";
-import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
-import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
 import { natswrapper } from "./nats-wrapper";
 
 const start = async () => {
@@ -14,26 +11,20 @@ const start = async () => {
     await natswrapper.connect(process.env.NATS_URL);
     await mongoose.connect(process.env.MONGO_URI);
     const jsm = await natswrapper.Client.jetstreamManager();
-    await jsm.streams.add({ name: "mystream", subjects: ["events.>"] });
-    // await new TicketCreatedPublisher(natswrapper.Client).addStream(
-    //   jsm,
-    //   "mystream",
-    //   ["events.>"]
-    // );
-    new TicketCreatedListener(natswrapper.Client).listen();
-    new TicketUpdatedListener(natswrapper.Client).listen();
-    new ExpirationCompleteListener(natswrapper.Client).listen();
+    await jsm.streams.add({name:"mystream",subjects:["events.>"]})
+    
     process.on("SIGTERM", () =>
       natswrapper.Client.close().then(() => {
         console.log("nats closed");
         process.exit();
       })
     );
+  
   } catch (error) {
     console.error(error);
   }
-  app.listen(4002, () => {
-    console.log("Orders Service running at port 4002! ");
+  app.listen(4003, () => {
+    console.log("Payments Service running at port 4003!!");
   });
 };
 
