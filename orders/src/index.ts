@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { app } from "./app";
 import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
 import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
+import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
 import { natswrapper } from "./nats-wrapper";
 
 const start = async () => {
@@ -21,6 +22,7 @@ const start = async () => {
     // );
     new TicketCreatedListener(natswrapper.Client).listen();
     new TicketUpdatedListener(natswrapper.Client).listen();
+    new ExpirationCompleteListener(natswrapper.Client).listen();
     process.on("SIGTERM", () =>
       natswrapper.Client.close().then(() => {
         console.log("nats closed");

@@ -66,7 +66,7 @@ router.post(
         },
       });
 
-      res.send({});
+      res.status(201).send(order);
     } catch (error) {
       next(error);
     }

@@ -10,8 +10,16 @@ export class OrderCreatedListener extends Listener<OrderCreated> {
   filterSubject = Subjects.EventOrderCreated;
   queueGroupName = queueGroupName;
   durableName = "order-created-expiration-durable";
-  async onMessage(data: OrderCreated["data"], msg: Msg): Promise<void> {
-    expirationQueue.add({ orderId: data.id });
+  onMessage(data: OrderCreated["data"], msg: Msg){
+    const delay = new Date(data.expiresAt).getTime() - new Date().getTime();
+    console.log("Processing event: ", data);
+    
+    expirationQueue.add(
+      { orderId: data.id },
+      {
+        delay: 60000,
+      }
+    );
 
     msg.respond();
   }
