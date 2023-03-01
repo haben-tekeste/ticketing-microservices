@@ -4,6 +4,7 @@ import { TicketCreatedListener } from "./events/listeners/ticket-created-listene
 import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
 import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
 import { natswrapper } from "./nats-wrapper";
+import { PaymentCreatedListener } from "./events/listeners/payment-created-listener";
 
 const start = async () => {
   if (!process.env.JWT_KEY) throw new Error("JWT Failed ");
@@ -15,14 +16,13 @@ const start = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     const jsm = await natswrapper.Client.jetstreamManager();
     await jsm.streams.add({ name: "mystream", subjects: ["events.>"] });
-    // await new TicketCreatedPublisher(natswrapper.Client).addStream(
-    //   jsm,
-    //   "mystream",
-    //   ["events.>"]
-    // );
+    
+    //
     new TicketCreatedListener(natswrapper.Client).listen();
     new TicketUpdatedListener(natswrapper.Client).listen();
     new ExpirationCompleteListener(natswrapper.Client).listen();
+    new PaymentCreatedListener(natswrapper.Client).listen()
+    
     process.on("SIGTERM", () =>
       natswrapper.Client.close().then(() => {
         console.log("nats closed");
